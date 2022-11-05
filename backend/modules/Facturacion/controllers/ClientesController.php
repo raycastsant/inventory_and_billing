@@ -8,7 +8,6 @@ use backend\modules\Facturacion\models\form\ClienteForm;
 use backend\modules\Facturacion\models\ClienteSearch;
 use backend\modules\Nomencladores\models\TipoCliente;
 use backend\modules\Seguridad\controllers\TrazasController;
-use backend\modules\Facturacion\controllers\VehiculosController;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -78,8 +77,9 @@ class ClientesController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate() {
-      /*  $model = new Cliente();
+    public function actionCreate()
+    {
+        /*  $model = new Cliente();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -89,16 +89,16 @@ class ClientesController extends Controller
         $model->cliente = new Cliente;
         $model->cliente->loadDefaultValues();
         $model->setAttributes(Yii::$app->request->post());
-            
+
         if (Yii::$app->request->post() && $model->saveAll()) {
-            TrazasController::insert("Creado cliente: ".$model->cliente->codigo."  nombre: ".$model->cliente->nombre, Cliente::tableName());
+            TrazasController::insert("Creado cliente: " . $model->cliente->codigo . "  nombre: " . $model->cliente->nombre, Cliente::tableName());
             Yii::$app->getSession()->setFlash('success', 'El cliente fue insertado satisfactoriamente');
-          
+
             return $this->redirect(['view', 'id' => $model->cliente->id]);
         }
 
-        $tipoclientes = ArrayHelper::map(TipoCliente::find()->where(['eliminado'=> false])->asArray()->all(), 'id', 'nombre');
-        return $this->render('create', ['model' => $model, 'tipoclientes' => $tipoclientes, 'annos' => VehiculosController::getYears()] );
+        $tipoclientes = ArrayHelper::map(TipoCliente::find()->where(['eliminado' => false])->asArray()->all(), 'id', 'nombre');
+        return $this->render('create', ['model' => $model, 'tipoclientes' => $tipoclientes, 'annos' => []]);
     }
 
     /**
@@ -108,7 +108,8 @@ class ClientesController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
         //$model = $this->findModel($id);
 
         $model = new ClienteForm();
@@ -116,13 +117,13 @@ class ClientesController extends Controller
         $model->setAttributes(Yii::$app->request->post());
 
         if (Yii::$app->request->post() && $model->saveAll()) {
-            TrazasController::insert("Actualizado cliente: ".$model->cliente->codigo."  nombre: ".$model->cliente->nombre, Cliente::tableName());
+            TrazasController::insert("Actualizado cliente: " . $model->cliente->codigo . "  nombre: " . $model->cliente->nombre, Cliente::tableName());
             Yii::$app->getSession()->setFlash('success', 'El cliente se actualizó satisfactoriamente');
             return $this->redirect(['view', 'id' => $model->cliente->id]);
         }
-        
-        $tipoclientes = ArrayHelper::map(TipoCliente::find()->where(['eliminado'=> false])->asArray()->all(), 'id', 'nombre');
-        return $this->render('update', ['model' => $model, 'tipoclientes' => $tipoclientes, 'annos' => VehiculosController::getYears()] );
+
+        $tipoclientes = ArrayHelper::map(TipoCliente::find()->where(['eliminado' => false])->asArray()->all(), 'id', 'nombre');
+        return $this->render('update', ['model' => $model, 'tipoclientes' => $tipoclientes, 'annos' => []]);
     }
 
     /**
@@ -132,12 +133,13 @@ class ClientesController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         //$this->findModel($id)->delete();
         $model = $this->findModel($id);
-        $model->eliminado=true;
+        $model->eliminado = true;
         $model->save();
-        TrazasController::insert("Eliminado cliente: ".$model->codigo."  nombre: ".$model->nombre, Cliente::tableName());
+        TrazasController::insert("Eliminado cliente: " . $model->codigo . "  nombre: " . $model->nombre, Cliente::tableName());
 
         return $this->redirect(['index']);
     }
@@ -154,9 +156,9 @@ class ClientesController extends Controller
         /*if (($model = Cliente::findOne($id)) !== null) {
             return $model;
         }*/
-        if ( ($model = Cliente::findOne(['id'=>$id, 'eliminado'=>false]) ) !== null) {
+        if (($model = Cliente::findOne(['id' => $id, 'eliminado' => false])) !== null) {
             return $model;
-       }
+        }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }

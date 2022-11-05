@@ -5,37 +5,35 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use backend\modules\Facturacion\ESTADOS;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\modules\Facturacion\models\OrdenVentaSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Órdenes de Ventas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="orden-venta-index">
-<legend>
-    <div class="row">
-        <div class="col-md-4">
-            <h1><?= Html::encode($this->title) ?></h1>
+    <legend>
+        <div class="row">
+            <div class="col-md-4">
+                <h1><?= Html::encode($this->title) ?></h1>
+            </div>
+            <div class="col-md-8">
+                <h1><?= Html::a('Nueva orden', ['create'], ['class' => 'btn btn-success']) ?></h1>
+            </div>
         </div>
-        <div class="col-md-8">
-            <h1><?= Html::a('Nueva orden', ['create'], ['class' => 'btn btn-success']) ?></h1>
-        </div>
-    </div>
-</legend>
+    </legend>
 
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'layout'=>'<div class="row">
+        'layout' => '<div class="row">
                 <div class="col-md-1 pageSizeLabel"><label>Cantidad de filas</label></div>
-                <div class="col-md-1 pageSizeSelector">'.
-                    Html::activeDropDownList($searchModel, 'myPageSize', 
-                    [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500=>500],
-                    ['id'=>'myPageSize']).' </div> 
+                <div class="col-md-1 pageSizeSelector">' .
+            Html::activeDropDownList(
+                $searchModel,
+                'myPageSize',
+                [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500 => 500],
+                ['id' => 'myPageSize']
+            ) . ' </div> 
                 <div class="col-md-10" style="width:600px"> {summary} </div>
                 </div>
             {items} {pager} ',
@@ -43,41 +41,35 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-                'attribute'=>'area',
-                'label'=>'Área',
-                'value'=>'area.nombre'
+                'attribute' => 'area',
+                'label' => 'Área',
+                'value' => 'area.nombre'
             ],
             [
-                'attribute'=>'codigo',
-                'label'=>'Código'
+                'attribute' => 'codigo',
+                'label' => 'Código'
             ],
             [
                 'attribute' => 'cliente',
-                'label'=>'Cliente',
-                'value'=>'cliente.nombre'
-            ],
-            [
-                'attribute' => 'vehiculo',
-                'label'=>'Vehículo',
-                'value'=>'vehiculo.chapa'
+                'label' => 'Cliente',
+                'value' => 'cliente.nombre'
             ],
             [
                 'attribute' => 'estadoOrden',
-                'value'=> function($model) {
+                'value' => function ($model) {
                     $e = $model->estadoOrden->estado;
 
-                    if($e == ESTADOS::ABIERTO)
-                        return '<span class="label label-info">'.$e.'</span>';
+                    if ($e == ESTADOS::ABIERTO)
+                        return '<span class="label label-info">' . $e . '</span>';
                     else
-                    if($e == ESTADOS::CANCELADO)
-                        return '<span class="label label-default">'.$e.'</span>';
+                    if ($e == ESTADOS::CANCELADO)
+                        return '<span class="label label-default">' . $e . '</span>';
                     else
-                    if($e == ESTADOS::FACTURADO)
-                        return '<span class="label label-warning">'.$e.'(por cobrar)</span>';
+                    if ($e == ESTADOS::FACTURADO)
+                        return '<span class="label label-warning">' . $e . '(por cobrar)</span>';
                     else
-                    if($e == ESTADOS::COBRADO)
-                        return '<span class="label label-success">'.$e.'</span>';
-
+                    if ($e == ESTADOS::COBRADO)
+                        return '<span class="label label-success">' . $e . '</span>';
                 },  //'estadoOrden.estado',
                 'filter' => [
                     'ABIERTA' => 'ABIERTA',
@@ -87,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'label' => 'Estado',
             ],
-          /*  [
+            /*  [
                 'attribute' => 'user',
                 'label'=>'Autor',
                 'value'=>'user.username'
@@ -95,13 +87,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'fecha_iniciada',
             [
                 'attribute' => 'precio_estimado',
-                'format'=> 'Currency',
+                'format' => 'Currency',
                 'label' => 'Monto',
             ],
             [
                 'attribute' => 'moneda',
                 'label' => 'Moneda',
-                'value' => function($model) {
+                'value' => function ($model) {
                     return $model->moneda->nombre;
                 },
                 'filter' => [1 => 'CUC', 2 => 'CUP'],
@@ -109,9 +101,9 @@ $this->params['breadcrumbs'][] = $this->title;
             //'fecha_cerrada',
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update}', 
+                'template' => '{view} {update}',
                 'buttons' => [
-                    'view' => function($url, $model) {
+                    'view' => function ($url, $model) {
                         $options = [
                             'title' => 'Ver',
                             'aria-label' => 'Ver',
@@ -120,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ];
                         return Html::a('<span class="glyphicon glyphicon-search"></span>', $url, $options);
                     },
-                    'update' => function($url, $model) {
+                    'update' => function ($url, $model) {
                         if ($model->estadoOrden->estado != ESTADOS::ABIERTO) {
                             return '';
                         }
@@ -137,7 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php Pjax::end(); 
-        echo Yii::$app->view->renderFile(Yii::getAlias('@app').'/views/_FilterFocusScript.php');
-     ?>
+    <?php Pjax::end();
+    echo Yii::$app->view->renderFile(Yii::getAlias('@app') . '/views/_FilterFocusScript.php');
+    ?>
 </div>

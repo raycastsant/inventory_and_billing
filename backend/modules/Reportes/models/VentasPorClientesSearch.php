@@ -8,9 +8,7 @@ use backend\modules\Inventario\models\Producto;
 use backend\modules\Facturacion\models\ProductosOrdenVenta;
 
 
-/**
- * VehiculoSearch represents the model behind the search form of `backend\modules\Facturacion\models\Vehiculo`.
- */
+
 class VentasPorClientesSearch extends Producto
 {
     public $myPageSize;
@@ -34,8 +32,9 @@ class VentasPorClientesSearch extends Producto
         ];
     }
 
-    public function validateFechaDesde($attribute, $params, $validator) {
-        if( $this->fechaHasta!=null && strtotime($this->$attribute) > strtotime($this->fechaHasta) )
+    public function validateFechaDesde($attribute, $params, $validator)
+    {
+        if ($this->fechaHasta != null && strtotime($this->$attribute) > strtotime($this->fechaHasta))
             $validator->addError($this, $attribute, 'La fecha DESDE debe ser menor');
     }
 
@@ -55,27 +54,15 @@ class VentasPorClientesSearch extends Producto
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+    public function search($params)
+    {
         //!Importante, debe ir antes de la consulta!
         $this->load($params);
-        
+
         /**Se buscan los productos sin tener en cuenta 
          * la existencia en almacen, siempre y cuando la orden correspondiente este FACTURADA, no 'Abierta' ni 'Cancelada'
          */
-        $query = new \yii\db\Query();    //Producto::find();
-
-       /* $query->select(['productos.codigo', 'productos.nombre', 'productos.nombre_imagen', 'productos.id', 'productos.desc', 'tipoproductos.tipo as tipoProducto', 
-                        'orden_ventas.codigo as ordenCod', 'productos_orden_venta.cantidad as cantVenta', 'clientes.nombre as clienteNombre', 'clientes.id as clienteId']);
-        $query->from('productos');
-        $query->innerJoin('tipoproductos', 'productos.tipoproducto_id=tipoproductos.id');
-        $query->innerJoin('productos_orden_venta', 'productos.id=productos_orden_venta.producto_id');
-        $query->innerJoin('orden_ventas', 'productos_orden_venta.orden_venta_id=orden_ventas.id');
-        $query->innerJoin('clientes', 'orden_ventas.cliente_id=clientes.id');
-       // $query->innerJoin('areas', 'orden_ventas.area_id=areas.id');
-        $query->andWhere('orden_ventas.estado_orden_id >= 3 AND orden_ventas.eliminado=false');
-        $query->groupBy(['clientes.nombre', 'productos.codigo', 'productos.nombre', 'productos_orden_venta.cantidad',   
-                        'tipoproductos.tipo']);*/
-        
+        $query = new \yii\db\Query();
         $query->select(['codigo', 'nombre', 'nombre_imagen', 'id', 'description', 'tipoProducto', 'tipoProductoId', 'ordenCod', 'sum(cantVenta) as cantVenta', 'clienteNombre', 'clienteId']);
         $query->from('view_ventas_clientes');
         $query->groupBy(['clienteNombre', 'tipoProducto', 'codigo', 'nombre']);
@@ -111,7 +98,7 @@ class VentasPorClientesSearch extends Producto
             'desc' => ['clienteNombre' => SORT_DESC],
         ];
 
-       /* $dataProvider->sort->attributes['tipoProducto'] = [
+        /* $dataProvider->sort->attributes['tipoProducto'] = [
             'asc' => ['tipoproductos.tipo' => SORT_ASC],
             'desc' => ['tipoproductos.tipo' => SORT_DESC],
         ];
@@ -149,9 +136,9 @@ class VentasPorClientesSearch extends Producto
             ->andFilterWhere(['like', 'nombre', $this->nombre])
             ->andFilterWhere(['like', 'area_id', $this->area])
             ->andFilterWhere(['>=', 'fecha_facturada', $this->fechaDesde])
-            ->andFilterWhere(['<=', 'fecha_facturada', $this->fechaHasta]); 
+            ->andFilterWhere(['<=', 'fecha_facturada', $this->fechaHasta]);
 
-       /* $query->andFilterWhere(['like', 'productos.codigo', $this->codigo])
+        /* $query->andFilterWhere(['like', 'productos.codigo', $this->codigo])
             ->andFilterWhere(['like', 'tipoproductos.tipo', $this->tipoProducto])
             ->andFilterWhere(['like', 'clientes.nombre', $this->clienteNombre])
             ->andFilterWhere(['like', 'productos.nombre', $this->nombre])
@@ -163,7 +150,8 @@ class VentasPorClientesSearch extends Producto
         return $dataProvider;
     }
 
-    public function getModelName() {
+    public function getModelName()
+    {
         return 'VentasPorClientesSearch';
     }
 }

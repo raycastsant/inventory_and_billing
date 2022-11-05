@@ -7,26 +7,23 @@ use yii\widgets\Pjax;
 use backend\components\Helper;
 use yii\bootstrap\Modal;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\modules\Facturacion\models\VehiculoSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
-    //Modal que muestra el Zoom de la imagen
-    Modal::begin([
-        'header' => '<h4 id="zoomHeader"></h4>',
-        'toggleButton' => ['label'=>'', 'id'=>'modal_launch', 'style'=>'display:none'],
-        'id' => 'modal_img',
-        'closeButton'=>['id'=>'close_modal'],
-        ]); 
-        echo '<img id="zoom_img" class="file-preview-image kv-preview-data file-zoom-detail" 
+//Modal que muestra el Zoom de la imagen
+Modal::begin([
+    'header' => '<h4 id="zoomHeader"></h4>',
+    'toggleButton' => ['label' => '', 'id' => 'modal_launch', 'style' => 'display:none'],
+    'id' => 'modal_img',
+    'closeButton' => ['id' => 'close_modal'],
+]);
+echo '<img id="zoom_img" class="file-preview-image kv-preview-data file-zoom-detail" 
                 src="" alt="" 
                 style="width: auto; height: auto; max-width: 100%; max-height: 100%;">';
-    Modal::end();
+Modal::end();
 
 $this->title = 'Productos más vendidos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="vehiculo-index">
+<div class="prod-mas-vendidos-index">
     <div class="row">
         <div class="col-md-8">
             <legend><?= Html::encode($this->title) ?></legend>
@@ -36,32 +33,37 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php 
-        Pjax::begin(); 
-        /**Si no se establece la opcion 'type', se asume por defecto que el valor de la clave 
-         * corresponde al LABEL del Input*/
-        $fields = ['cantVenta'=>'Ventas a partir de:', 'codigo'=>'Código de producto', 'nombre'=>'Nombre de producto', 
-                   'tipoProducto'=>['type'=>'Select2', 'data'=>$tipoproductos, 'label'=>'Categoría'], 
-                   'area'=>['type'=>'Select2', 'data'=>$areas, 'label'=>'Área'],
-                   //'ordenCod'=>'Código de Orden', 
-                   'fechaDesde'=>['type'=>'DatePicker', 'label'=>'Desde'], 
-                   'fechaHasta'=>['type'=>'DatePicker', 'label'=>'Hasta'], 
-                ];
-        echo $this->render('_search', [
-                            'model' => $searchModel, 
-                            'action' => 'productos-mas-vendidos',
-                            'fields' => $fields, ]); ?>
+    <?php
+    Pjax::begin();
+    /**Si no se establece la opcion 'type', se asume por defecto que el valor de la clave 
+     * corresponde al LABEL del Input*/
+    $fields = [
+        'cantVenta' => 'Ventas a partir de:', 'codigo' => 'Código de producto', 'nombre' => 'Nombre de producto',
+        'tipoProducto' => ['type' => 'Select2', 'data' => $tipoproductos, 'label' => 'Categoría'],
+        'area' => ['type' => 'Select2', 'data' => $areas, 'label' => 'Área'],
+        //'ordenCod'=>'Código de Orden', 
+        'fechaDesde' => ['type' => 'DatePicker', 'label' => 'Desde'],
+        'fechaHasta' => ['type' => 'DatePicker', 'label' => 'Hasta'],
+    ];
+    echo $this->render('_search', [
+        'model' => $searchModel,
+        'action' => 'productos-mas-vendidos',
+        'fields' => $fields,
+    ]); ?>
 
-    <?php 
-         echo GridView::widget([
+    <?php
+    echo GridView::widget([
         'dataProvider' => $dataProvider,
-       // 'filterModel' => $searchModel,
-        'layout'=>'<div class="row">
+        // 'filterModel' => $searchModel,
+        'layout' => '<div class="row">
             <div class="col-md-1 pageSizeLabel"><label>Cantidad de filas</label></div>
-            <div class="col-md-1 pageSizeSelector">'.
-                Html::activeDropDownList($searchModel, 'myPageSize', 
-                [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500=>500],
-                ['id'=>'myPageSize']).' </div> 
+            <div class="col-md-1 pageSizeSelector">' .
+            Html::activeDropDownList(
+                $searchModel,
+                'myPageSize',
+                [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500 => 500],
+                ['id' => 'myPageSize']
+            ) . ' </div> 
             <div class="col-md-10" style="width:600px"> {summary} </div>
             </div>
         {items} {pager} ',
@@ -70,26 +72,34 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute' => 'nombre_imagen',
-                'label'=>'Imagen',
-                'format'=>'raw',
-                'value' => function($data) {
-                    if($data['nombre_imagen']) {
-                        $h = @fopen(Url::base(true).'//uploads//'.$data['nombre_imagen'], 'r');
-                        if($h)
-                            return Helper::ImgThumbailWidget(Yii::$app->request->baseUrl.'//uploads//'.$data['nombre_imagen'], $data['id'], 
-                                $data['codigo'].', '.$data['nombre'], 'i'.$data['id'], "70px", "70px");
-                    }
-                    else
+                'label' => 'Imagen',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    if ($data['nombre_imagen']) {
+                        $h = @fopen(Url::base(true) . '//uploads//' . $data['nombre_imagen'], 'r');
+                        if ($h)
+                            return Helper::ImgThumbailWidget(
+                                Yii::$app->request->baseUrl . '//uploads//' . $data['nombre_imagen'],
+                                $data['id'],
+                                $data['codigo'] . ', ' . $data['nombre'],
+                                'i' . $data['id'],
+                                "70px",
+                                "70px"
+                            );
+                    } else
                         return '';
                 },
             ],
             [
                 'attribute' => 'codigo',
-                'label'=>'Código',
-                'value' => function($data) {
-                    if($data['codigo'])
-                        return Html::a($data['codigo'], ['/inventario/productos/view', 'id' => $data['id']], 
-                                            ['target' => '_blank', 'data-pjax' => '0']);
+                'label' => 'Código',
+                'value' => function ($data) {
+                    if ($data['codigo'])
+                        return Html::a(
+                            $data['codigo'],
+                            ['/inventario/productos/view', 'id' => $data['id']],
+                            ['target' => '_blank', 'data-pjax' => '0']
+                        );
                     else
                         return '';
                 },
@@ -97,20 +107,20 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'nombre',
                 'contentOptions' => ['style' => 'max-width:500px; white-space: pre-wrap;'],
-             ],
-             [
+            ],
+            [
                 'attribute' => 'desc',
                 'contentOptions' => ['style' => 'max-width:500px; white-space: pre-wrap;'],
-                'label'=>'Descripción',
-             ],
+                'label' => 'Descripción',
+            ],
             [
                 'attribute' => 'tipoProducto',
-                'label'=>'Categoría',
-                'value'=> function($data) {
+                'label' => 'Categoría',
+                'value' => function ($data) {
                     return $data['tipoProducto'];
                 }
-             ],
-             /*[
+            ],
+            /*[
                 'attribute' => 'ordenCod',
                 'label'=>'Orden',
                 'value' => function($data) {
@@ -121,23 +131,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '';
                 },
              ],*/
-             [
+            [
                 'attribute' => 'cantVenta',
-                'label'=>'Cantidad',
-                'value'=> function($data) {
+                'label' => 'Cantidad',
+                'value' => function ($data) {
                     return $data['cantVenta'];
                 }
-             ],
+            ],
         ],
     ]);  ?>
 
     <div id="ajax-loader" class="well row hidden">
         <div class="col-md-3"></div>
-        <div class="col-md-3"><h3>Procesando información<h3></div>
+        <div class="col-md-3">
+            <h3>Procesando información<h3>
+        </div>
         <div class="col-md-2"><?= Html::img('/InvFactServices/backend/web/images/loader.gif'); ?></div>
     </div>
 
-    <?php Pjax::end(); 
+    <?php Pjax::end();
 
     $this->registerJs('
         var inputName = null;
@@ -167,7 +179,7 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });",  yii\web\View::POS_READY);
 
-   /* $this->registerJs('$("#W0").on("click", "thead", function() {
+    /* $this->registerJs('$("#W0").on("click", "thead", function() {
         console.log("dfsd");
     });');*/
     ?>

@@ -13,7 +13,7 @@ use backend\components\UserRole;
 use kartik\sidenav\SideNav;
 use yii\helpers\Url;
 
-Yii::$app->name = "IB";
+Yii::$app->name = "Inventario y Facturación";
 
 AppAsset::register($this);
 ?>
@@ -138,7 +138,6 @@ AppAsset::register($this);
                 
                     if($rol == UserRole::ROL_SUPERVISOR "" ) {*/
                         $sideItems[] = ['label' => 'Clientes', 'url' => ['/facturacion/clientes/index']];
-                        $sideItems[] = ['label' => 'Vehículos', 'url' => ['/facturacion/vehiculos/index']];
                         $sideItems[] = ['label' => 'Trabajadores', 'url' => ['/facturacion/trabajadores/index']];
                     }
 

@@ -2,10 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
-/* @var $this yii\web\View */
-/* @var $model backend\modules\Facturacion\models\OrdenServicioSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="orden-servicio-search">
@@ -28,11 +24,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'user_id') ?>
 
-    <?php // echo $form->field($model, 'fecha_iniciada') ?>
+    <?php // echo $form->field($model, 'fecha_iniciada') 
+    ?>
 
-    <?php // echo $form->field($model, 'fecha_cerrada') ?>
+    <?php // echo $form->field($model, 'fecha_cerrada') 
+    ?>
 
-    <?php // echo $form->field($model, 'precio_estimado') ?>
+    <?php // echo $form->field($model, 'precio_estimado') 
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>

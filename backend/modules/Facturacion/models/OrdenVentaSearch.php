@@ -14,9 +14,8 @@ class OrdenVentaSearch extends OrdenVenta
 {
     public $myPageSize;
     public $cliente;
-    public $estadoOrden; 
+    public $estadoOrden;
     public $area;
-    public $vehiculo;
     public $moneda;
 
     /**
@@ -26,8 +25,10 @@ class OrdenVentaSearch extends OrdenVenta
     {
         return [
             [['id', 'cliente_id', 'estado_orden_id', 'area_id', 'moneda'], 'integer'],
-            [['codigo', 'fecha_iniciada', 'fecha_facturada', 'fecha_cobrada', 'cliente', 'estadoOrden', 
-              'area', 'vehiculo', 'myPageSize', 'moneda'], 'safe'],
+            [[
+                'codigo', 'fecha_iniciada', 'fecha_facturada', 'fecha_cobrada', 'cliente', 'estadoOrden',
+                'area',  'myPageSize', 'moneda'
+            ], 'safe'],
             [['precio_estimado'], 'number'],
         ];
     }
@@ -48,18 +49,19 @@ class OrdenVentaSearch extends OrdenVenta
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+    public function search($params)
+    {
         $session = Yii::$app->session;
         $area_id = -1;
-        if($session->has('area'))
+        if ($session->has('area'))
             $area_id = $session->get('area');
 
-        if($area_id > 0)
-            $query = OrdenVenta::find()->having(['eliminado'=> false, 'area_id'=> $area_id]);
+        if ($area_id > 0)
+            $query = OrdenVenta::find()->having(['eliminado' => false, 'area_id' => $area_id]);
         else
-            $query = OrdenVenta::find()->having(['eliminado'=> false]);
+            $query = OrdenVenta::find()->having(['eliminado' => false]);
 
-        $query->joinWith(['cliente', 'estadoOrden', 'vehiculo', 'area']);
+        $query->joinWith(['cliente', 'estadoOrden', 'area']);
 
         // add conditions that should always apply here
 
@@ -72,19 +74,15 @@ class OrdenVentaSearch extends OrdenVenta
         $dataProvider->sort->attributes['cliente'] = [
             'asc' => ['clientes.nombre' => SORT_ASC],
             'desc' => ['clientes.nombre' => SORT_DESC],
-            ];
+        ];
         $dataProvider->sort->attributes['estadoOrden'] = [
             'asc' => ['estado_orden.estado' => SORT_ASC],
             'desc' => ['estado_orden.estado' => SORT_DESC],
-            ];
-        $dataProvider->sort->attributes['vehiculo'] = [
-            'asc' => ['vehiculos.chapa' => SORT_ASC],
-            'desc' => ['vehiculos.chapa' => SORT_DESC],
-            ];
+        ];
         $dataProvider->sort->attributes['area'] = [
             'asc' => ['areas.nombre' => SORT_ASC],
             'desc' => ['areas.nombre' => SORT_DESC],
-            ];
+        ];
 
         $this->load($params);
         $dataProvider->pagination->pageSize = ($this->myPageSize !== NULL) ? $this->myPageSize : 10;
@@ -103,11 +101,10 @@ class OrdenVentaSearch extends OrdenVenta
         ]);
 
         $query->andFilterWhere(['like', 'orden_ventas.codigo', $this->codigo])
-        ->andFilterWhere(['like', 'clientes.nombre', $this->cliente])
-        ->andFilterWhere(['like', 'fecha_iniciada', $this->fecha_iniciada])
-        ->andFilterWhere(['like', 'estado_orden.estado', $this->estadoOrden])
-        ->andFilterWhere(['like', 'areas.nombre', $this->area])
-        ->andFilterWhere(['like', 'vehiculos.chapa', $this->vehiculo]);
+            ->andFilterWhere(['like', 'clientes.nombre', $this->cliente])
+            ->andFilterWhere(['like', 'fecha_iniciada', $this->fecha_iniciada])
+            ->andFilterWhere(['like', 'estado_orden.estado', $this->estadoOrden])
+            ->andFilterWhere(['like', 'areas.nombre', $this->area]);
 
         return $dataProvider;
     }

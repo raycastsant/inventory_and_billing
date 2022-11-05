@@ -6,12 +6,8 @@ use yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\modules\Inventario\models\Producto;
-use backend\modules\Facturacion\models\ProductosOrdenVenta;
 
 
-/**
- * VehiculoSearch represents the model behind the search form of `backend\modules\Facturacion\models\Vehiculo`.
- */
 class ProductosMasVendidosSearch extends Producto
 {
     //private $criterio = 2;
@@ -30,15 +26,16 @@ class ProductosMasVendidosSearch extends Producto
     {
         return [
             [['tipoproducto_id', 'cantVenta'], 'integer'],
-            ['cantVenta', 'default', 'value'=>2],
+            ['cantVenta', 'default', 'value' => 2],
             [['nombre', 'codigo', 'desc', 'desc_ampliada', 'ordenCod', 'tipoProducto', 'cantVenta', 'fechaDesde', 'fechaHasta', 'area', 'myPageSize'], 'safe'],
             ['fechaDesde', 'validateFechaDesde'],
             [['costo', 'precio'], 'number'],
         ];
     }
 
-    public function validateFechaDesde($attribute, $params, $validator) {
-        if( $this->fechaHasta!=null && strtotime($this->$attribute) > strtotime($this->fechaHasta) )
+    public function validateFechaDesde($attribute, $params, $validator)
+    {
+        if ($this->fechaHasta != null && strtotime($this->$attribute) > strtotime($this->fechaHasta))
             $validator->addError($this, $attribute, 'La fecha DESDE debe ser menor');
     }
 
@@ -58,17 +55,18 @@ class ProductosMasVendidosSearch extends Producto
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+    public function search($params)
+    {
         //!Importante, debe ir antes de la consulta!
         $this->load($params);
-        
-        if(!$this->cantVenta || $this->cantVenta<0)
+
+        if (!$this->cantVenta || $this->cantVenta < 0)
             $this->cantVenta = 0;
 
         /**Se buscan los productos que tengan una cantidad de ventas estimadas, sin tener en cuenta 
          * la existencia en almacen, siempre y cuando la orden correspondiente este FACTURADA, no 'Abierta' ni 'Cancelada'
          */
-       /* $query = new \yii\db\Query();  
+        /* $query = new \yii\db\Query();  
         
         //TODO Luego de un tiempo esto se puede quitar. Es para dar solucion en el momento en que surgio el tema de eliminar las categorias
             $unnatended = $query->select(['productos_orden_venta.id', 'productos.tipoproducto_id'])
@@ -82,27 +80,29 @@ class ProductosMasVendidosSearch extends Producto
             }*/
 
         $query = new \yii\db\Query();
-        $query->select(['productos.codigo', 'productos.nombre', 'productos.nombre_imagen', 'productos.id', 'productos.desc', 'tipoproductos.tipo as tipoProducto', 
-                        'sum(productos_orden_venta.cantidad) as cantVenta']);
+        $query->select([
+            'productos.codigo', 'productos.nombre', 'productos.nombre_imagen', 'productos.id', 'productos.desc', 'tipoproductos.tipo as tipoProducto',
+            'sum(productos_orden_venta.cantidad) as cantVenta'
+        ]);
         $query->from('productos');
         $query->innerJoin('productos_orden_venta', 'productos.id=productos_orden_venta.producto_id');
         //$query->innerJoin('tipoproductos', 'productos_orden_venta.tipoproducto_id=tipoproductos.id');  
         $query->innerJoin('tipoproductos', 'productos.tipoproducto_id=tipoproductos.id');
         $query->innerJoin('orden_ventas', 'productos_orden_venta.orden_venta_id=orden_ventas.id');
         //$query->innerJoin('areas', 'orden_ventas.area_id=areas.id');
-        
+
         $areaWhere = "";
-        if(isset($this->area) && !empty($this->area))
-            $areaWhere = " and orden_ventas.area_id=".$this->area;
+        if (isset($this->area) && !empty($this->area))
+            $areaWhere = " and orden_ventas.area_id=" . $this->area;
 
-        $query->andWhere('orden_ventas.estado_orden_id >= 3 AND orden_ventas.eliminado=false '.$areaWhere);
+        $query->andWhere('orden_ventas.estado_orden_id >= 3 AND orden_ventas.eliminado=false ' . $areaWhere);
 
-       /* $query->andWhere('productos.id in (SELECT productos.id FROM 
+        /* $query->andWhere('productos.id in (SELECT productos.id FROM 
                                                   productos INNER JOIN productos_orden_venta ON productos.id=productos_orden_venta.producto_id 
                                                   INNER JOIN orden_ventas ON productos_orden_venta.orden_venta_id=orden_ventas.id
                                                   WHERE (orden_ventas.estado_orden_id >= 3) '.$areaWhere.' GROUP BY productos.id having sum(productos_orden_venta.cantidad)>='.$this->cantVenta.')');*/
         $query->groupBy(['tipoProducto', 'productos.codigo', 'productos.nombre']);
-        $query->having('sum(productos_orden_venta.cantidad) >= '.$this->cantVenta);
+        $query->having('sum(productos_orden_venta.cantidad) >= ' . $this->cantVenta);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -144,7 +144,7 @@ class ProductosMasVendidosSearch extends Producto
         }
 
         $query->andFilterWhere(['like', 'productos.codigo', $this->codigo])
-            ->andFilterWhere(['productos_orden_venta.tipoproducto_id' => $this->tipoProducto])  
+            ->andFilterWhere(['productos_orden_venta.tipoproducto_id' => $this->tipoProducto])
             //->andFilterWhere(['like', 'tipoproductos.tipo', $this->tipoProducto])
             ->andFilterWhere(['like', 'orden_ventas.codigo', $this->ordenCod])
             ->andFilterWhere(['like', 'productos.nombre', $this->nombre])
@@ -155,7 +155,8 @@ class ProductosMasVendidosSearch extends Producto
         return $dataProvider; // $query->all();
     }
 
-    public function getModelName() {
+    public function getModelName()
+    {
         return 'ProductosMasVendidosSearch';
     }
 }

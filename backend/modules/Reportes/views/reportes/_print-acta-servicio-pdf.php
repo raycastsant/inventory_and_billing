@@ -6,7 +6,13 @@ use yii\widgets\DetailView;
 
 <?= $this->render('_print-header-pdf', ['ceoInfo' => $ceoInfo]); ?>
 <br>
-<table class="table table-striped"><tr><td style="text-align:center;"><h4>ORDEN DE SERVICIO</h4></td></tr></table>
+<table class="table table-striped">
+    <tr>
+        <td style="text-align:center;">
+            <h4>ORDEN DE SERVICIO</h4>
+        </td>
+    </tr>
+</table>
 <table class="table table-striped table-bordered">
     <tr>
         <td colspan="2">
@@ -14,24 +20,6 @@ use yii\widgets\DetailView;
         </td>
         <td>
             <b>Contrato No:</b> <?= $model->no_contrato ?>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>Vehículo</b>
-        </td>
-        <td colspan="2">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>Marca:</b> <?= $model->marca ?>
-        </td>
-        <td>
-            <b>Modelo:</b> <?= $model->modelo ?>
-        </td>
-        <td>
-            <b>Matrícula:</b> <?= $model->matricula ?>
         </td>
     </tr>
     <tr>
@@ -81,11 +69,8 @@ use yii\widgets\DetailView;
             Firma:
         </td>
         <td colspan="2">
-            Firma: <?php //if($printfirma == 'true') echo Html::img('/InvFactServices/backend/web/images/Fa1.png'); ?>
+            Firma: <?php //if($printfirma == 'true') echo Html::img('/InvFactServices/backend/web/images/Fa1.png'); 
+                    ?>
         </td>
     </tr>
 </table>
-
-
-
-

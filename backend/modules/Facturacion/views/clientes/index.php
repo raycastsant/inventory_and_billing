@@ -3,45 +3,44 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-/* @var $this yii\web\View */
-/* @var $searchModel backend\modules\Facturacion\models\ClienteSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+
 
 $this->title = 'Clientes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cliente-index">
-<legend>
-    <div class="row">
-        <div class="col-md-2">
-            <h1><?= Html::encode($this->title) ?></h1>
+    <legend>
+        <div class="row">
+            <div class="col-md-2">
+                <h1><?= Html::encode($this->title) ?></h1>
+            </div>
+            <div class="col-md-10">
+                <h1><?= Html::a('Nuevo', ['create'], ['class' => 'btn btn-success']) ?></h1>
+            </div>
         </div>
-        <div class="col-md-10">
-            <h1><?= Html::a('Nuevo', ['create'], ['class' => 'btn btn-success']) ?></h1>
-        </div>
-    </div>
-</legend>
+    </legend>
 
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'layout'=>'<div class="row">
+        'layout' => '<div class="row">
                 <div class="col-md-1 pageSizeLabel"><label>Cantidad de filas</label></div>
-                <div class="col-md-1 pageSizeSelector">'.
-                    Html::activeDropDownList($searchModel, 'myPageSize', 
-                    [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500=>500],
-                    ['id'=>'myPageSize']).' </div> 
+                <div class="col-md-1 pageSizeSelector">' .
+            Html::activeDropDownList(
+                $searchModel,
+                'myPageSize',
+                [10 => 10, 20 => 20, 50 => 50, 100 => 100, 500 => 500],
+                ['id' => 'myPageSize']
+            ) . ' </div> 
                 <div class="col-md-10" style="width:600px"> {summary} </div>
                 </div>
             {items} {pager} ',
         'filterSelector' => '#myPageSize',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-          //  'id',
-           /* [
+            //  'id',
+            /* [
                 'attribute' => 'codigo',
                 'label' => 'Código'
             ],*/
@@ -51,10 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'tipoCliente',
-                'label'=>'Tipo de cliente',
-                'value'=>'tipoCliente.nombre'
-             ],
-             [
+                'label' => 'Tipo de cliente',
+                'value' => 'tipoCliente.nombre'
+            ],
+            [
                 'attribute' => 'telefono',
                 'contentOptions' => ['style' => 'max-width:80px; white-space: pre-wrap;'],
             ],
@@ -65,9 +64,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete}', 
+                'template' => '{view} {update} {delete}',
                 'buttons' => [
-                    'view' => function($url, $model) {
+                    'view' => function ($url, $model) {
                         $options = [
                             'title' => 'Ver',
                             'aria-label' => 'Ver',
@@ -76,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ];
                         return Html::a('<span class="glyphicon glyphicon-search"></span>', $url, $options);
                     },
-                    'update' => function($url, $model) {
+                    'update' => function ($url, $model) {
                         $options = [
                             'title' => 'Editar',
                             'aria-label' => 'Editar',
@@ -85,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ];
                         return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
                     },
-                    'delete' => function($url, $model) {
+                    'delete' => function ($url, $model) {
                         $options = [
                             'title' => 'Eliminar',
                             'aria-label' => 'Eliminar',
@@ -103,9 +102,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php Pjax::end(); ?>
 
-    <?php 
-    echo Yii::$app->view->renderFile(Yii::getAlias('@app').'/views/_FilterFocusScript.php');
-    
+    <?php
+    echo Yii::$app->view->renderFile(Yii::getAlias('@app') . '/views/_FilterFocusScript.php');
+
     /*    $this->registerJs('
             var inputName = null;
             jQuery("#p0").on("keyup", "input", function() {
@@ -122,5 +121,5 @@ $this->params['breadcrumbs'][] = $this->title;
             setInputCursor(el);
             inputName = null;
         });');*/
-     ?>
+    ?>
 </div>

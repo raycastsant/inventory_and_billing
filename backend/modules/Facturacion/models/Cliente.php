@@ -22,7 +22,6 @@ use yii\data\ActiveDataProvider;
  * @property TipoCliente $tipoCliente
  * @property OrdenServicio[] $ordenServicios
  * @property OrdenVenta[] $ordenVentas
- * @property Vehiculo[] $vehiculos
  * @property ClienteEmpresaResponsable[] $clienteEmpresaResponsables
  */
 class Cliente extends \yii\db\ActiveRecord
@@ -42,7 +41,7 @@ class Cliente extends \yii\db\ActiveRecord
     {
         return [
             ['tipo_cliente_id', 'required'],
-            ['nombre', 'required', 'message'=>'Inserte un nombre'],
+            ['nombre', 'required', 'message' => 'Inserte un nombre'],
             [['tipo_cliente_id'], 'integer'],
             [['nombre'], 'string', 'max' => 56],
             [['telefono'], 'string', 'max' => 40],
@@ -52,7 +51,7 @@ class Cliente extends \yii\db\ActiveRecord
             [['email'], 'email'],
             [['nombre'], 'unique'],
             [['cid'], 'safe'],
-            [['tipo_cliente_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoCliente::className(), 'targetAttribute' => ['tipo_cliente_id' => 'id']],
+            [['tipo_cliente_id'], 'exist', 'skipOnError' => true, 'targetClass' => TipoCliente::class, 'targetAttribute' => ['tipo_cliente_id' => 'id']],
         ];
     }
 
@@ -64,7 +63,7 @@ class Cliente extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
-          //  'codigo' => 'Codigo',
+            //  'codigo' => 'Codigo',
             'telefono' => 'Teléfono',
             'fax' => 'Fax',
             'direccion' => 'Dirección',
@@ -77,7 +76,7 @@ class Cliente extends \yii\db\ActiveRecord
      */
     public function getTipoCliente()
     {
-        return $this->hasOne(TipoCliente::className(), ['id' => 'tipo_cliente_id']);
+        return $this->hasOne(TipoCliente::class, ['id' => 'tipo_cliente_id']);
     }
 
     /**
@@ -85,7 +84,7 @@ class Cliente extends \yii\db\ActiveRecord
      */
     public function getOrdenServicios()
     {
-        return $this->hasMany(OrdenServicio::className(), ['cliente_id' => 'id']);
+        return $this->hasMany(OrdenServicio::class, ['cliente_id' => 'id']);
     }
 
     /**
@@ -93,40 +92,35 @@ class Cliente extends \yii\db\ActiveRecord
      */
     public function getOrdenVentas()
     {
-        return $this->hasMany(OrdenVenta::className(), ['cliente_id' => 'id'])->orderBy('codigo desc');
+        return $this->hasMany(OrdenVenta::class, ['cliente_id' => 'id'])->orderBy('codigo desc');
     }
 
-    public function getVentasQuery() {
+    public function getVentasQuery()
+    {
         $query = OrdenVenta::find();
         $query->innerJoin('clientes', 'orden_ventas.cliente_id=clientes.id');
-        $query->andWhere('cliente_id='.$this->id);
+        $query->andWhere('cliente_id=' . $this->id);
 
         return $query;
     }
 
-    public function getServiciosQuery() {
+    public function getServiciosQuery()
+    {
         $query = OrdenServicio::find();
-        $query->innerJoin('vehiculos', 'orden_servicios.vehiculo_id=vehiculos.id');
-        $query->innerJoin('clientes', 'vehiculos.cliente_id=clientes.id');
-        $query->andWhere('cliente_id='.$this->id);
+        $query->innerJoin('clientes', 'cliente_id=clientes.id');
+        $query->andWhere('cliente_id=' . $this->id);
 
         return  $query;
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVehiculos()
-    {
-        return $this->hasMany(Vehiculo::className(), ['cliente_id' => 'id']);
-    }
 
-    
+
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getClienteEmpresaResponsables()
     {
-        return $this->hasMany(ClienteEmpresaResponsable::className(), ['cliente_id' => 'id']);
+        return $this->hasMany(ClienteEmpresaResponsable::class, ['cliente_id' => 'id']);
     }
 }

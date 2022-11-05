@@ -2,9 +2,6 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model backend\modules\Facturacion\models\Cliente */
-
 $this->title = 'Actualizar Cliente: ' . $model->cliente->nombre;
 $this->params['breadcrumbs'][] = ['label' => 'Clientes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->cliente->id, 'url' => ['view', 'id' => $model->cliente->id]];
